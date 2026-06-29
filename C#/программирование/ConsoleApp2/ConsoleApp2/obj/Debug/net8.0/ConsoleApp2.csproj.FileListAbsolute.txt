@@ -1,0 +1,15 @@
+F:\учеба\программирование\ConsoleApp2\ConsoleApp2\bin\Debug\net8.0\ConsoleApp2.exe
+F:\учеба\программирование\ConsoleApp2\ConsoleApp2\bin\Debug\net8.0\ConsoleApp2.deps.json
+F:\учеба\программирование\ConsoleApp2\ConsoleApp2\bin\Debug\net8.0\ConsoleApp2.runtimeconfig.json
+F:\учеба\программирование\ConsoleApp2\ConsoleApp2\bin\Debug\net8.0\ConsoleApp2.dll
+F:\учеба\программирование\ConsoleApp2\ConsoleApp2\bin\Debug\net8.0\ConsoleApp2.pdb
+F:\учеба\программирование\ConsoleApp2\ConsoleApp2\obj\Debug\net8.0\ConsoleApp2.GeneratedMSBuildEditorConfig.editorconfig
+F:\учеба\программирование\ConsoleApp2\ConsoleApp2\obj\Debug\net8.0\ConsoleApp2.AssemblyInfoInputs.cache
+F:\учеба\программирование\ConsoleApp2\ConsoleApp2\obj\Debug\net8.0\ConsoleApp2.AssemblyInfo.cs
+F:\учеба\программирование\ConsoleApp2\ConsoleApp2\obj\Debug\net8.0\ConsoleApp2.csproj.CoreCompileInputs.cache
+F:\учеба\программирование\ConsoleApp2\ConsoleApp2\obj\Debug\net8.0\ConsoleApp2.sourcelink.json
+F:\учеба\программирование\ConsoleApp2\ConsoleApp2\obj\Debug\net8.0\ConsoleApp2.dll
+F:\учеба\программирование\ConsoleApp2\ConsoleApp2\obj\Debug\net8.0\refint\ConsoleApp2.dll
+F:\учеба\программирование\ConsoleApp2\ConsoleApp2\obj\Debug\net8.0\ConsoleApp2.pdb
+F:\учеба\программирование\ConsoleApp2\ConsoleApp2\obj\Debug\net8.0\ConsoleApp2.genruntimeconfig.cache
+F:\учеба\программирование\ConsoleApp2\ConsoleApp2\obj\Debug\net8.0\ref\ConsoleApp2.dll
