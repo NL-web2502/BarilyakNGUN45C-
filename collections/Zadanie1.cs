@@ -1,15 +1,19 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-namespace HomeWork.Task1
+namespace коллекцииДЗ
 {
-    internal class Program
+    internal class Task1_List
     {
+        public static void CheckTaskFirst()
+        {
+            Console.WriteLine("Задание 1");
+        }   
         private class ListTask
         {
             private readonly List<string> numbers;
 
-            public ListTask()
+            public ListTask() 
             {
                 numbers = new List<string> { "Один", "Два", "Три", "Четыре" };
             }

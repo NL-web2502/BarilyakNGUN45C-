@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace HomeWork.Task2
+namespace коллекцииДЗ
 {
-    internal class Program
+    internal class Task2_Dictionary
     {
-        private class DictionaryTask
+        public static void CheckTaskSecond()
+        {
+        }
+             private class DictionaryTask
         {
             private readonly Dictionary<string, double> _studentGrades;
 
@@ -13,41 +16,42 @@ namespace HomeWork.Task2
             {
                 _studentGrades = new Dictionary<string, double>();
             }
-
             public void TaskLoop()
             {
-                Console.WriteLine("ЗАДАНИЕ 2:");
-
-                while (true)
                 {
-                    Console.WriteLine("Выберите действие:");
-                    Console.WriteLine("1 - Добавить студента");
-                    Console.WriteLine("2 - Найти оценку студента");
-                    Console.WriteLine("3 - Показать всех студентов");
-                    Console.Write("Ваш выбор: ");
+                    Console.WriteLine("ЗАДАНИЕ 2:");
 
-                    string choice = Console.ReadLine();
-
-                    if (choice == "exit")
+                    while (true)
                     {
-                        Console.WriteLine("Выход из задачи");
-                        break;
-                    }
+                        Console.WriteLine("Выберите действие:");
+                        Console.WriteLine("1 - Добавить студента");
+                        Console.WriteLine("2 - Найти оценку студента");
+                        Console.WriteLine("3 - Показать всех студентов");
+                        Console.Write("Ваш выбор: ");
 
-                    switch (choice)
-                    {
-                        case "1":
-                            AddStudent();
+                        string choice = Console.ReadLine();
+
+                        if (choice == "exit")
+                        {
+                            Console.WriteLine("Выход из задачи");
                             break;
-                        case "2":
-                            FindStudent();
-                            break;
-                        case "3":
-                            ShowAllStudents();
-                            break;
-                        default:
-                            Console.WriteLine("Неверный ввод. Попробуйте снова.");
-                            break;
+                        }
+
+                        switch (choice)
+                        {
+                            case "1":
+                                AddStudent();
+                                break;
+                            case "2":
+                                FindStudent();
+                                break;
+                            case "3":
+                                ShowAllStudents();
+                                break;
+                            default:
+                                Console.WriteLine("Неверный ввод. Попробуйте снова.");
+                                break;
+                        }
                     }
                 }
             }
@@ -96,7 +100,10 @@ namespace HomeWork.Task2
                     Console.WriteLine($"{student.Key}: {student.Value:F2}");
                 }
             }
+
         }
+
+
     }
 }
 
