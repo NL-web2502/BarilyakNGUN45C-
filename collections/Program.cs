@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace коллекцииДЗ
+namespace CollectionHomework
 {
     internal class Program
     {
@@ -22,15 +22,15 @@ namespace коллекцииДЗ
                 switch (task)
                 {
                     case 1:
-                        Task1_List.CheckTaskFirst();
+                        Task1List.CheckTaskFirst();
                         break;
 
                     case 2:
-                        Task2_Dictionary.CheckTaskSecond();
+                        Task2Dictionary.CheckTaskSecond();
                         break;
 
                     case 3:
-                        Task3_LinkedList.CheckTaskThird();
+                        Task3LinkedList.CheckTaskThird();
                         break;
 
                     default:

@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace коллекцииДЗ
+namespace CollectionHomework
 {
-    internal class Task2_Dictionary
+    internal class Task2Dictionary
     {
         public static void CheckTaskSecond()
         {
+            var dictionaryTask = new DictionaryTask();
+            dictionaryTask.TaskLoop();
         }
              private class DictionaryTask
         {

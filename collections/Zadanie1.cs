@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-namespace коллекцииДЗ
+namespace CollectionHomework
 {
-    internal class Task1_List
+    internal class Task1List
     {
         public static void CheckTaskFirst()
         {
-            Console.WriteLine("Задание 1");
+            var listTask = new ListTask();
+            listTask.TaskLoop();
         }   
         private class ListTask
         {
