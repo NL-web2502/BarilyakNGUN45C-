@@ -12,7 +12,7 @@ namespace String_symbol
             Task3();
             Task4();
             Task5();
-            //Task6();
+            Task6();
         }
         // задание 1
         static void Task1()
@@ -37,7 +37,7 @@ namespace String_symbol
         }
         static string GreetUser(string name, int age)
         {
-            return $"Hello, {name}! You are {age} years old. Nice to meet you!";
+            return $"Hello, {name}! You are {age} years old. \nNice to meet you!";
         }
 
         // задание3
@@ -45,7 +45,8 @@ namespace String_symbol
         {
             string Result1 = AnalyzeString("Aerosmith is crazy");
             string Result2 = AnalyzeString("RocK`n roll!");
-            Console.WriteLine(Result1 + Result2);
+            Console.WriteLine(Result1);
+            Console.WriteLine(Result2);
         }
         static string AnalyzeString(string input)
         {
@@ -64,8 +65,7 @@ namespace String_symbol
         }
         static string GetFirstFiveChars(string input)
         {
-            Console.WriteLine("Naturwissenschaften");
-            
+                   
             if (string.IsNullOrEmpty(input))
                 return string.Empty;
 
@@ -78,8 +78,17 @@ namespace String_symbol
         // задание 5
         static void Task5()
         {
-            string result = "Need for speed";
-            Console.WriteLine(result);
+            string[] words = { "Need", "for", "speed" };
+            StringBuilder result = BuildSentenceFromArray(words);
+            Console.WriteLine(result.ToString());
+
+            string[] words2 = { "C#", "is", "awesome", "language" };
+            StringBuilder result2 = BuildSentenceFromArray(words2);
+            Console.WriteLine(result2.ToString());
+
+            string[] words3 = { "HeHe" };
+            StringBuilder result3 = BuildSentenceFromArray(words3);
+            Console.WriteLine(result3.ToString());
         }
         static StringBuilder BuildSentenceFromArray(string[] words)
         {
@@ -93,6 +102,18 @@ namespace String_symbol
             }
 
             return sb;
+        }
+
+        // задание 6
+
+        static void Task6()
+        {
+            string result = ReplaceWords("Hello world", "world", "universe");
+            Console.WriteLine(result);
+        }
+        static string ReplaceWords(string inputString, string wordToReplace, string replacementWord)
+        {
+            return inputString.Replace(wordToReplace, replacementWord);
         }
     }
 }
