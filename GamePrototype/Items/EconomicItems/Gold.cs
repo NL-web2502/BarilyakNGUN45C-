@@ -1,4 +1,5 @@
-﻿using GamePrototype.Utils;
+﻿using GamePrototype.Units;
+using GamePrototype.Utils;
 
 namespace GamePrototype.Items.EconomicItems
 {
@@ -7,7 +8,12 @@ namespace GamePrototype.Items.EconomicItems
         public override bool Stackable => true;
 
         public Gold() : base(GameConstants.Gold)
-        {            
-        }       
+        {
+        }
+
+        public override void Use(Unit user)
+        {
+            Console.WriteLine($"{user.Name} collected Gold!"); 
+        }
     }
 }

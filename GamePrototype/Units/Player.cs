@@ -42,8 +42,8 @@ namespace GamePrototype.Units
             for (int i = items.Count - 1; i >= 0; i--)
             {
                 if (items[i] is EconomicItem economicItem)
-                {
-                    UseEconomicItem(economicItem);
+                { 
+                    economicItem.Use(this);
                     Inventory.TryRemove(items[i]);
                 }
             }
