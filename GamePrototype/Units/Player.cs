@@ -17,22 +17,23 @@ namespace GamePrototype.Units
         };
 
         public Player(string name, uint health, uint maxHealth, uint baseDamage) : base(name, health, maxHealth, baseDamage)
-        {            
+        {
         }
 
         public override uint GetUnitDamage()
         {
             uint totalDamage = BaseDamage;
 
-            if (_equipment.TryGetValue(EquipSlot.Weapon, out var item) && item is Weapon weapon) 
+            if (_equipment.TryGetValue(EquipSlot.Weapon, out var item) && item is Weapon weapon && !item.IsBroken)
             {
-                return BaseDamage + weapon.Damage;
+                totalDamage += weapon.Damage;
             }
-            if (_equipment.TryGetValue(EquipSlot.RangeWeapon, out var rangeItem) && rangeItem is RangeWeapon rangeWeapon && !rangeItem.IsBroken)
+            else if (_equipment.TryGetValue(EquipSlot.RangeWeapon, out var rangeItem) && rangeItem is RangeWeapon rangeWeapon && !rangeItem.IsBroken)
             {
                 totalDamage += rangeWeapon.Damage;
             }
-            return BaseDamage;
+
+            return totalDamage;
         }
 
         public override void HandleCombatComplete()
@@ -40,7 +41,7 @@ namespace GamePrototype.Units
             var items = Inventory.Items;
             for (int i = items.Count - 1; i >= 0; i--)
             {
-                if (items[i] is EconomicItem economicItem) 
+                if (items[i] is EconomicItem economicItem)
                 {
                     UseEconomicItem(economicItem);
                     Inventory.TryRemove(items[i]);
@@ -50,12 +51,9 @@ namespace GamePrototype.Units
 
         public override void AddItemToInventory(Item item)
         {
-            if (item is EquipItem equipItem && _equipment.TryAdd(equipItem.Slot, equipItem)) 
+            if (item is EquipItem equipItem)
             {
-                if (!TryEquipItem(equipItem))
-                {
-                    base.AddItemToInventory(item);
-                }
+                TryEquipItem(equipItem);
                 return;
             }
             base.AddItemToInventory(item);
@@ -70,19 +68,18 @@ namespace GamePrototype.Units
                 if (oldItem != null && !oldItem.IsBroken)
                 {
                     base.AddItemToInventory(oldItem);
-                    Console.WriteLine($"Снят {_equipmentNames[slot]}: {oldItem.Name}");
+                    Console.WriteLine($"Unequipped {_equipmentNames[slot]}: {oldItem.Name}");
                 }
                 _equipment.Remove(slot);
             }
 
             _equipment[slot] = newItem;
-            Console.WriteLine($"Экипирован {_equipmentNames[slot]}: {newItem.Name}");
+            Console.WriteLine($"Equipped {_equipmentNames[slot]}: {newItem.Name}");
             return true;
         }
 
         public bool UseGrindstone()
         {
-            
             Item? grindstone = null;
             foreach (var item in Inventory.Items)
             {
@@ -95,84 +92,78 @@ namespace GamePrototype.Units
 
             if (grindstone == null)
             {
-                Console.WriteLine("You have not a Grindstone!");
+                Console.WriteLine("You don't have a Grindstone!");
                 return false;
             }
 
             bool anyRepaired = false;
 
-            if (_equipment.TryGetValue(EquipSlot.Weapon, out var weapon) && weapon != null && weapon.Durability < weapon.MaxDurability)
+            var equipmentToRepair = new List<EquipItem>();
+            foreach (var slot in _equipment.Values)
             {
-                weapon.Repair(weapon.MaxDurability);
-                anyRepaired = true;
+                if (slot != null && slot.Durability < slot.MaxDurability)
+                {
+                    equipmentToRepair.Add(slot);
+                }
             }
 
-           
-            if (_equipment.TryGetValue(EquipSlot.RangeWeapon, out var rangeWeapon) && rangeWeapon != null && rangeWeapon.Durability < rangeWeapon.MaxDurability)
+            if (equipmentToRepair.Count == 0)
             {
-                rangeWeapon.Repair(rangeWeapon.MaxDurability);
-                anyRepaired = true;
-            }
-
-            if (_equipment.TryGetValue(EquipSlot.Armour, out var armour) && armour != null && armour.Durability < armour.MaxDurability)
-            {
-                armour.Repair(armour.MaxDurability);
-                anyRepaired = true;
-            }
-
-            if (_equipment.TryGetValue(EquipSlot.Helmet, out var helmet) && helmet != null && helmet.Durability < helmet.MaxDurability)
-            {
-                helmet.Repair(helmet.MaxDurability);
-                anyRepaired = true;
-            }
-
-            if (!anyRepaired)
-            {
-                Console.WriteLine("All the equipment is already in perfect condition.!");
+                Console.WriteLine("All equipment is already in perfect condition!");
                 return false;
             }
 
-            Inventory.TryRemove(grindstone);
-            Console.WriteLine("Grindstone has been used.!");
-            return true;
+            foreach (var item in equipmentToRepair)
+            {
+                item.Repair(4);
+                anyRepaired = true;
+            }
+
+            if (anyRepaired)
+            {
+                Inventory.TryRemove(grindstone);
+                Console.WriteLine("Grindstone has been used!");
+                return true;
+            }
+
+            return false;
         }
 
         private void UseEconomicItem(EconomicItem economicItem)
         {
-            if (economicItem is HealthPotion healthPotion) 
+            if (economicItem is HealthPotion healthPotion)
             {
                 Health = Math.Min(Health + healthPotion.HealthRestore, MaxHealth);
-                Console.WriteLine($"{Name} used a Health posion! Health: {Health}/{MaxHealth}");
+                Console.WriteLine($"{Name} used a Health Potion! Health: {Health}/{MaxHealth}");
             }
         }
 
         protected override uint CalculateAppliedDamage(uint damage)
         {
             uint totalDefence = 0;
-            
-            if (_equipment.TryGetValue(EquipSlot.Armour, out var armour) && armour is Armour armourItem && !armourItem.IsBroken)
-            {
-                totalDefence += armourItem.Defence; 
 
-                if (!armourItem.ReduceDurability(1))
+            foreach (var slot in _equipment.Values)
+            {
+                if (slot is Armour armour && !slot.IsBroken)
                 {
-                    Console.WriteLine($"Arnour {armourItem.Name} is broken!");
-                    _equipment.Remove(EquipSlot.Armour);
+                    totalDefence += armour.Defence;
+                    if (!slot.ReduceDurability(1))
+                    {
+                        Console.WriteLine($"Armour {slot.Name} is broken!");
+                        _equipment.Remove(slot.Slot);
+                    }
+                }
+                else if (slot is Helmet helmet && !slot.IsBroken)
+                {
+                    totalDefence += helmet.Defence;
+                    if (!slot.ReduceDurability(1))
+                    {
+                        Console.WriteLine($"Helmet {slot.Name} is broken!");
+                        _equipment.Remove(slot.Slot);
+                    }
                 }
             }
 
-            if (_equipment.TryGetValue(EquipSlot.Helmet, out var helmet) && helmet is Helmet helmetItem && !helmetItem.IsBroken)
-            {
-                totalDefence += helmetItem.Defence;
-                
-                if (!helmetItem.ReduceDurability(1))
-                {
-                    Console.WriteLine($"Helmet {helmetItem.Name} is broken!");
-                    _equipment.Remove(EquipSlot.Helmet);
-                }
-            }
-
-           
             if (_equipment.TryGetValue(EquipSlot.Weapon, out var weapon) && weapon != null && !weapon.IsBroken)
             {
                 if (!weapon.ReduceDurability(1))
@@ -182,12 +173,11 @@ namespace GamePrototype.Units
                 }
             }
 
-            
             if (_equipment.TryGetValue(EquipSlot.RangeWeapon, out var rangeWeapon) && rangeWeapon != null && !rangeWeapon.IsBroken)
             {
                 if (!rangeWeapon.ReduceDurability(1))
                 {
-                    Console.WriteLine($"RangeWeapon{rangeWeapon.Name} is broken!");
+                    Console.WriteLine($"RangeWeapon {rangeWeapon.Name} is broken!");
                     _equipment.Remove(EquipSlot.RangeWeapon);
                 }
             }
@@ -195,12 +185,10 @@ namespace GamePrototype.Units
             float damageReduction = Math.Min(totalDefence / 100f, 0.5f);
             return (uint)(damage * (1 - damageReduction));
         }
-            return damage;
-        }
 
-             protected override void DamageReceiveHandler()
+        protected override void DamageReceiveHandler()
         {
-            Console.WriteLine($"{Name} is damaged! Helth: {Health}/{MaxHealth}");
+            Console.WriteLine($"{Name} is damaged! Health: {Health}/{MaxHealth}");
         }
 
         public override string ToString()
@@ -211,28 +199,26 @@ namespace GamePrototype.Units
             builder.AppendLine($"Damage: {BaseDamage}");
             builder.AppendLine("Loot:");
             var items = Inventory.Items;
-            for (int i = 0; i < items.Count; i++) 
+            for (int i = 0; i < items.Count; i++)
             {
                 builder.AppendLine($"[{items[i].Name}] : {items[i].Amount}");
             }
-            return builder.ToString();
 
-            builder.AppendLine("\n--- Экипировка ---");
+            builder.AppendLine("\n--- Equipment ---");
             foreach (var slot in Enum.GetValues<EquipSlot>())
             {
                 if (_equipment.TryGetValue(slot, out var item) && item != null)
                 {
-                    string status = item.IsBroken ? " (СЛОМАНА)" : $" (Прочность: {item.Durability}/{item.MaxDurability})";
+                    string status = item.IsBroken ? " (BROKEN)" : $" (Durability: {item.Durability}/{item.MaxDurability})";
                     builder.AppendLine($"{_equipmentNames[slot]}: {item.Name}{status}");
                 }
                 else
                 {
-                    builder.AppendLine($"{_equipmentNames[slot]}: Пусто");
+                    builder.AppendLine($"{_equipmentNames[slot]}: Empty");
                 }
             }
 
-            builder.AppendLine("\n--- Equipment ---");
-            var items = Inventory.Items;
+            builder.AppendLine("\n--- Inventory ---");
             if (items.Count == 0)
             {
                 builder.AppendLine("Empty");
@@ -252,13 +238,13 @@ namespace GamePrototype.Units
 
         public void ShowEquipmentStatus()
         {
-            Console.WriteLine("\n=== Equipments ===");
+            Console.WriteLine("\n=== Equipment Status ===");
             foreach (var slot in Enum.GetValues<EquipSlot>())
             {
                 if (_equipment.TryGetValue(slot, out var item) && item != null)
                 {
                     string status = item.IsBroken ? "Broken" : $"{item.Durability}/{item.MaxDurability}";
-                    Console.WriteLine($"{_equipmentNames[slot]}: {item.Name} (Endurance: {status})");
+                    Console.WriteLine($"{_equipmentNames[slot]}: {item.Name} (Durability: {status})");
                 }
                 else
                 {
@@ -268,7 +254,4 @@ namespace GamePrototype.Units
             Console.WriteLine();
         }
     }
-}
-        }
-    }
-}
+}   

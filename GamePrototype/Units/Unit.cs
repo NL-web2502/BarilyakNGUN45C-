@@ -61,11 +61,12 @@ namespace GamePrototype.Units
 
         public void AddItemsFromUnitToInventory(Unit unit)
         {
-            for (int i = 0; i < unit.Inventory.Items.Count; i++) 
+            var items = unit.Inventory.Items;
+            for (int i = items.Count - 1; i >= 0; i--)
             {
-                if (!Inventory.TryAdd(unit.Inventory.Items[i])) 
-                {
-                    //inventory is full
+                if (!Inventory.TryAdd(items[i]))
+                { 
+                    Console.WriteLine($"Inventory of {Name} is full!");
                     return;
                 }
             }

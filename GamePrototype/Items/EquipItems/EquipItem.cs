@@ -23,8 +23,7 @@ namespace GamePrototype.Items.EquipItems
         {
             if (_durability == 0) return false;
 
-            _durability -= delta;
-            if (_durability < 0) _durability = 0;
+            _durability = delta >= _durability ? 0 : _durability - delta;
 
             Console.WriteLine($"{Name} durability: {_durability}/{_maxDurability}");
             return _durability > 0;
@@ -34,7 +33,7 @@ namespace GamePrototype.Items.EquipItems
         {
             if (_durability == _maxDurability)
             {
-                Console.WriteLine($"{Name} is repaired");
+                Console.WriteLine($"{Name} is already fully repaired");
                 return;
             }
             _durability = Math.Min(_durability + delta, _maxDurability);
@@ -43,6 +42,4 @@ namespace GamePrototype.Items.EquipItems
 
         public bool IsBroken => _durability == 0;
     }
-}
-    }
-}
+} 

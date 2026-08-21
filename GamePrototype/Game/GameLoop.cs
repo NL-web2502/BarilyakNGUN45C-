@@ -10,6 +10,16 @@ namespace GamePrototype.Game
         private Unit _player;
         private DungeonRoom _dungeon;
         private readonly CombatManager _combatManager = new CombatManager();
+        private readonly Difficulty _difficulty;
+        private readonly UnitFactory _unitFactory;
+
+        public GameLoop(Difficulty difficulty)
+        {
+            _difficulty = difficulty;
+            _unitFactory = difficulty == Difficulty.Easy
+                ? new EasyUnitFactory()
+                : new HardUnitFactory();
+        }
 
         public void StartGame()
         {
@@ -22,10 +32,9 @@ namespace GamePrototype.Game
 
         private void Initialize()
         {
-            Console.WriteLine("Welcome, player!");
-            _dungeon = DungeonBuilder.BuildDungeon();
+            _dungeon = DungeonBuilder.BuildDungeon(_difficulty);
             Console.WriteLine("Enter your name");
-            _player = UnitFactoryDemo.CreatePlayer(Console.ReadLine());
+            _player = _unitFactory.CreatePlayer(Console.ReadLine());
             Console.WriteLine($"Hello {_player.Name}");
 
             if (_player is Player player)
@@ -49,7 +58,7 @@ namespace GamePrototype.Game
 
                 if (_player is Player player)
                 {
-                    Console.WriteLine("\n Do you want to use a GringStone? (y/n)");
+                    Console.WriteLine("\nDo you want to use a Grindstone? (y/n)");
                     if (Console.ReadLine()?.ToLower() == "y")
                     {
                         player.UseGrindstone();
@@ -82,15 +91,16 @@ namespace GamePrototype.Game
             success = true;
             if (currentRoom.Loot != null)
             {
-                if (currentRoom.Loot is Grindstone)
+                Console.WriteLine($"Found {currentRoom.Loot.Name}!");
+
+                if (_player is Player player)
                 {
-                    Console.WriteLine($"Find {currentRoom.Loot.Name}!");
+                    player.AddItemToInventory(currentRoom.Loot);
                 }
                 else
                 {
-                    Console.WriteLine($"Find {currentRoom.Loot.Name}!");
+                    _player.AddItemToInventory(currentRoom.Loot);
                 }
-                _player.AddItemToInventory(currentRoom.Loot);
             }
             if (currentRoom.Enemy != null)
             {
@@ -122,6 +132,6 @@ namespace GamePrototype.Game
             }
             Console.WriteLine();
         }
-         
+
     }
 }
