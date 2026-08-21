@@ -18,15 +18,15 @@ namespace GamePrototype.Utils
             _unitFactory = new HardUnitFactory();
         }
 
-        public DungeonRoom CreateRoom(string name) => new DungeonRoom(name);
+        public override DungeonRoom CreateRoom(string name) => new DungeonRoom(name);
 
-        public DungeonRoom CreateRoomWithEnemy(string name)
+        public override DungeonRoom CreateRoomWithEnemy(string name)
         {
             var enemy = _unitFactory.CreateEnemy();
             return new DungeonRoom(name, enemy);
         }
 
-        public DungeonRoom CreateRoomWithLoot(string name)
+        public override DungeonRoom CreateRoomWithLoot(string name)
         {
             var loot = CreateLoot();
             return new DungeonRoom(name, loot);

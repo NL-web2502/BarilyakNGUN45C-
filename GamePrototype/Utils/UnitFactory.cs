@@ -12,11 +12,5 @@ namespace GamePrototype.Utils
         Unit CreatePlayer(string name);
         Unit CreateEnemy();
     }
-
-    public interface DungeonFactory
-    {
-        Dungeon.DungeonRoom CreateRoom(string name);
-        Dungeon.DungeonRoom CreateRoomWithEnemy(string name);
-        Dungeon.DungeonRoom CreateRoomWithLoot(string name);
-    }
+       
 }

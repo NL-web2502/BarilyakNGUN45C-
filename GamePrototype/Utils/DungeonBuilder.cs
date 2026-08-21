@@ -1,5 +1,6 @@
 ﻿using GamePrototype.Dungeon;
 using GamePrototype.Items.EconomicItems;
+using GamePrototype.Items.EquipItems;
 
 namespace GamePrototype.Utils
 {
@@ -19,18 +20,18 @@ namespace GamePrototype.Utils
             var weaponRoom = factory.CreateRoomWithLoot("Armory");
             var helmetRoom = factory.CreateRoomWithLoot("Guard Room");
             var finalRoom = factory.CreateRoom("Final Chamber");
-             
+
             if (difficulty == Difficulty.Hard)
             {
-                var finalLoot = new Items.EquipItems.MagicWeapon(20, 15, 10, 25, "Staff of Power");
+                var finalLoot = new Weapon(20, 25, "Staff of Power");
                 finalRoom = new DungeonRoom("Final Chamber", finalLoot);
             }
             else
             {
-                var finalLoot = new Items.EconomicItems.Gold();
+                var finalLoot = new Gold();
                 finalRoom = new DungeonRoom("Final Chamber", finalLoot);
             }
-             
+
             enter.TrySetDirection(Direction.Right, monsterRoom);
             enter.TrySetDirection(Direction.Left, emptyRoom);
 
@@ -49,11 +50,5 @@ namespace GamePrototype.Utils
 
             return enter;
         }
-    }
-
-    public enum Difficulty
-    {
-        Easy,
-        Hard
     }
 }
