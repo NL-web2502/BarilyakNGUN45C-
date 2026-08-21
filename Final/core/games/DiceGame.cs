@@ -62,17 +62,17 @@ namespace Final.core.games
 
         public override void PlayGame()
         {
-            // Roll dice for player
+           
             _playerScore = 0;
             _computerScore = 0;
 
-            // Player's turn
+            
             foreach (var die in _dice)
             {
                 _playerScore += die.Number;
             }
 
-            // Computer's turn - re-roll dice
+           
             _dice.Clear();
             for (int i = 0; i < _numberOfDice; i++)
             {
@@ -84,7 +84,7 @@ namespace Final.core.games
                 _computerScore += die.Number;
             }
 
-            // Determine winner
+            
             if (_playerScore > _computerScore)
             {
                 _resultMessage = $"Player wins! {_playerScore} vs {_computerScore}";

@@ -85,7 +85,7 @@ namespace Final.core.games
             _playerCards.Clear();
             _computerCards.Clear();
 
-            // Deal initial cards
+            
             _playerCards.Add(_deck.Dequeue());
             _playerCards.Add(_deck.Dequeue());
             _computerCards.Add(_deck.Dequeue());
@@ -94,7 +94,7 @@ namespace Final.core.games
             int playerScore = CalculateScore(_playerCards);
             int computerScore = CalculateScore(_computerCards);
 
-            // Check for immediate win/lose
+            
             if (playerScore == 21 && computerScore == 21)
             {
                 _resultMessage = "Both have Blackjack! It's a draw!";
@@ -117,7 +117,7 @@ namespace Final.core.games
                 return;
             }
 
-            // Game loop - draw cards until someone wins or busts
+           
             while (playerScore < 21 && computerScore < 21 && playerScore == computerScore)
             {
                 _playerCards.Add(_deck.Dequeue());
@@ -126,7 +126,7 @@ namespace Final.core.games
                 computerScore = CalculateScore(_computerCards);
             }
 
-            // Determine winner
+           
             if (playerScore > 21 && computerScore > 21)
             {
                 _resultMessage = "Both busted! It's a draw!";
@@ -176,7 +176,7 @@ namespace Final.core.games
                 score += value;
             }
 
-            // Handle aces
+            
             while (score > 21 && aces > 0)
             {
                 score -= 10;
