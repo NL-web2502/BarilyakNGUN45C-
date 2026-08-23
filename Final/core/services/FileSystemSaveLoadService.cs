@@ -14,26 +14,41 @@ namespace Final.core.services
         public FileSystemSaveLoadService(string basePath)
         {
             _basePath = basePath;
-            if (!Directory.Exists(_basePath))
-            {
-                Directory.CreateDirectory(_basePath);
-            }
         }
 
         public void SaveData(string data, string identifier)
         {
-            string filePath = Path.Combine(_basePath, $"{identifier}.txt");
-            File.WriteAllText(filePath, data);
+            try
+            { 
+                if (!Directory.Exists(_basePath))
+                {
+                    Directory.CreateDirectory(_basePath);
+                }
+
+                string filePath = Path.Combine(_basePath, $"{identifier}.txt");
+                File.WriteAllText(filePath, data);
+            }
+            catch (Exception ex)
+            {
+                throw new IOException($"Failed to save data: {ex.Message}", ex);
+            }
         }
 
         public string LoadData(string identifier)
         {
-            string filePath = Path.Combine(_basePath, $"{identifier}.txt");
-            if (File.Exists(filePath))
+            try
             {
-                return File.ReadAllText(filePath);
+                string filePath = Path.Combine(_basePath, $"{identifier}.txt");
+                if (File.Exists(filePath))
+                {
+                    return File.ReadAllText(filePath);
+                }
+                return string.Empty;
             }
-            return string.Empty;
+            catch (Exception ex)
+            {
+                throw new IOException($"Failed to load data: {ex.Message}", ex);
+            }
         }
     }
 }

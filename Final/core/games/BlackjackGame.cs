@@ -27,6 +27,7 @@ namespace Final.core.games
             _numberOfCards = numberOfCards;
             _playerCards = new List<Card>();
             _computerCards = new List<Card>();
+            
             FactoryMethod();
         }
 
@@ -80,10 +81,22 @@ namespace Final.core.games
             _bet = bet;
         }
 
+        private void EnsureDeckHasCards(int needed)
+        {
+            if (_deck.Count < needed)
+            {
+                Console.WriteLine("🔄 Reshuffling deck...");
+                FactoryMethod();
+            }
+        }
+
         public override void PlayGame()
         {
             _playerCards.Clear();
             _computerCards.Clear();
+
+           
+            EnsureDeckHasCards(4);
 
             
             _playerCards.Add(_deck.Dequeue());
@@ -104,29 +117,28 @@ namespace Final.core.games
             }
             else if (playerScore == 21)
             {
-                _resultMessage = "Player has Blackjack! Player wins!";
+                _resultMessage = "🎉 Player has Blackjack! Player wins!";
                 OnWinInvoke(new GameResultEventArgs(_resultMessage, _bet, _bet * 2));
                 DisplayResult();
                 return;
             }
             else if (computerScore == 21)
             {
-                _resultMessage = "Computer has Blackjack! Computer wins!";
+                _resultMessage = "💻 Computer has Blackjack! Computer wins!";
                 OnLooseInvoke(new GameResultEventArgs(_resultMessage, _bet, 0));
                 DisplayResult();
                 return;
             }
 
-           
             while (playerScore < 21 && computerScore < 21 && playerScore == computerScore)
             {
+                EnsureDeckHasCards(2);
                 _playerCards.Add(_deck.Dequeue());
                 _computerCards.Add(_deck.Dequeue());
                 playerScore = CalculateScore(_playerCards);
                 computerScore = CalculateScore(_computerCards);
             }
 
-           
             if (playerScore > 21 && computerScore > 21)
             {
                 _resultMessage = "Both busted! It's a draw!";
@@ -134,12 +146,12 @@ namespace Final.core.games
             }
             else if (playerScore > 21)
             {
-                _resultMessage = $"Player busted! (Score: {playerScore}) Computer wins!";
+                _resultMessage = $"💻 Player busted! (Score: {playerScore}) Computer wins!";
                 OnLooseInvoke(new GameResultEventArgs(_resultMessage, _bet, 0));
             }
             else if (computerScore > 21)
             {
-                _resultMessage = $"Computer busted! (Score: {computerScore}) Player wins!";
+                _resultMessage = $"🎉 Computer busted! (Score: {computerScore}) Player wins!";
                 OnWinInvoke(new GameResultEventArgs(_resultMessage, _bet, _bet * 2));
             }
             else if (playerScore == computerScore)
@@ -149,12 +161,12 @@ namespace Final.core.games
             }
             else if (playerScore > computerScore)
             {
-                _resultMessage = $"Player wins! {playerScore} vs {computerScore}";
+                _resultMessage = $"🎉 Player wins! {playerScore} vs {computerScore}";
                 OnWinInvoke(new GameResultEventArgs(_resultMessage, _bet, _bet * 2));
             }
             else
             {
-                _resultMessage = $"Computer wins! {computerScore} vs {playerScore}";
+                _resultMessage = $"💻 Computer wins! {computerScore} vs {playerScore}";
                 OnLooseInvoke(new GameResultEventArgs(_resultMessage, _bet, 0));
             }
 
@@ -176,7 +188,6 @@ namespace Final.core.games
                 score += value;
             }
 
-            
             while (score > 21 && aces > 0)
             {
                 score -= 10;

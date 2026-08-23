@@ -16,13 +16,13 @@ namespace Final.core.models
         public int Number { get; }
 
         public Dice(int min, int max)
-        {
-            if (min < 1 || min > int.MaxValue)
+        { 
+            if (min < 1)
             {
                 throw new WrongDiceNumberException(min, 1, int.MaxValue);
             }
 
-            if (max < 1 || max > int.MaxValue)
+            if (max < 1)
             {
                 throw new WrongDiceNumberException(max, 1, int.MaxValue);
             }

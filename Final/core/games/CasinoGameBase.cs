@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Final.core.services;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -32,19 +33,7 @@ namespace Final.core.games
         protected abstract void FactoryMethod();
 
         public abstract void DisplayResult();
-    }
 
-    public class GameResultEventArgs : EventArgs
-    {
-        public string Message { get; }
-        public long BetAmount { get; }
-        public long ResultAmount { get; }
-
-        public GameResultEventArgs(string message, long betAmount, long resultAmount)
-        {
-            Message = message;
-            BetAmount = betAmount;
-            ResultAmount = resultAmount;
-        }
+        public abstract void SetBet(long bet);
     }
 }

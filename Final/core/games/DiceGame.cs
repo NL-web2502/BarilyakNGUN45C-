@@ -48,11 +48,6 @@ namespace Final.core.games
 
         protected override void FactoryMethod()
         {
-            _dice = new List<Dice>();
-            for (int i = 0; i < _numberOfDice; i++)
-            {
-                _dice.Add(new Dice(_minValue, _maxValue));
-            }
         }
 
         public void SetBet(long bet)
@@ -66,7 +61,15 @@ namespace Final.core.games
             _playerScore = 0;
             _computerScore = 0;
 
-            
+            List<Dice> playerDice = new List<Dice>();
+            List<Dice> computerDice = new List<Dice>();
+
+            for (int i = 0; i < _numberOfDice; i++)
+            {
+                playerDice.Add(new Dice(_minValue, _maxValue));
+                computerDice.Add(new Dice(_minValue, _maxValue));
+            }
+
             foreach (var die in _dice)
             {
                 _playerScore += die.Number;

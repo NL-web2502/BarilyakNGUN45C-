@@ -20,12 +20,7 @@ namespace Final.core.models
 
         public int GetValue()
         {
-            int value = (int)Rank;
-            if (value > 10)
-            {
-                return 10;
-            }
-            return value;
+            return (int)Rank;
         }
 
         public override string ToString()
