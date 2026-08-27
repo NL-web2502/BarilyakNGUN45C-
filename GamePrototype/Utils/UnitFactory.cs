@@ -1,16 +1,10 @@
-﻿using GamePrototype.Units;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using GamePrototype.Units;
 
 namespace GamePrototype.Utils
 {
-    public interface UnitFactory
+    public interface IUnitFactory
     {
         Unit CreatePlayer(string name);
         Unit CreateEnemy();
     }
-       
 }

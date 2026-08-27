@@ -1,16 +1,11 @@
-﻿using GamePrototype.Dungeon;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using GamePrototype.Dungeon;
 
 namespace GamePrototype.Utils
 {
-    public abstract class DungeonFactory
+    public interface IDungeonFactory
     {
-        public abstract DungeonRoom CreateRoom(string name);
-        public abstract DungeonRoom CreateRoomWithEnemy(string name);
-        public abstract DungeonRoom CreateRoomWithLoot(string name);
+        DungeonRoom CreateRoom(string name);
+        DungeonRoom CreateRoomWithEnemy(string name);
+        DungeonRoom CreateRoomWithLoot(string name);
     }
 }

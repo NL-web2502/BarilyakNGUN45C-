@@ -1,4 +1,4 @@
-﻿using GamePrototype.Items.EconomicItems;
+using GamePrototype.Items.EconomicItems;
 using GamePrototype.Items.EquipItems;
 using GamePrototype.Utils;
 using System.Text;
@@ -38,13 +38,12 @@ namespace GamePrototype.Units
 
         public override void HandleCombatComplete()
         {
-            var items = Inventory.Items;
-            for (int i = items.Count - 1; i >= 0; i--)
+            var items = Inventory.Items.ToList();
+            foreach (var economicItem in items.OfType<EconomicItem>())
             {
-                if (items[i] is EconomicItem economicItem)
-                { 
-                    economicItem.Use(this);
-                    Inventory.TryRemove(items[i]);
+                if (economicItem is HealthPotion or Gold)
+                {
+                    UseEconomicItem(economicItem);
                 }
             }
         }
@@ -78,34 +77,47 @@ namespace GamePrototype.Units
             return true;
         }
 
-        public bool UseGrindstone()
+        public bool UseEconomicItem(string itemName)
         {
-            Item? grindstone = null;
-            foreach (var item in Inventory.Items)
-            {
-                if (item is Grindstone)
-                {
-                    grindstone = item;
-                    break;
-                }
-            }
+            var economicItem = Inventory.Items
+                .OfType<EconomicItem>()
+                .FirstOrDefault(item => item.Name == itemName);
 
-            if (grindstone == null)
+            if (economicItem == null)
             {
-                Console.WriteLine("You don't have a Grindstone!");
+                Console.WriteLine($"You don't have a {itemName}!");
                 return false;
             }
 
-            bool anyRepaired = false;
+            return UseEconomicItem(economicItem);
+        }
 
-            var equipmentToRepair = new List<EquipItem>();
-            foreach (var slot in _equipment.Values)
+        private bool UseEconomicItem(EconomicItem economicItem)
+        {
+            switch (economicItem)
             {
-                if (slot != null && slot.Durability < slot.MaxDurability)
-                {
-                    equipmentToRepair.Add(slot);
-                }
+                case HealthPotion healthPotion:
+                    Heal(healthPotion.HealthRestore);
+                    Console.WriteLine($"{Name} used a Health Potion! Health: {Health}/{MaxHealth}");
+                    return Inventory.TryRemove(economicItem);
+
+                case Gold:
+                    Console.WriteLine($"{Name} collected Gold!");
+                    return Inventory.TryRemove(economicItem);
+
+                case Grindstone:
+                    return UseGrindstone(economicItem);
+
+                default:
+                    return false;
             }
+        }
+
+        private bool UseGrindstone(EconomicItem economicItem)
+        {
+            var equipmentToRepair = _equipment.Values
+                .Where(item => item != null && item.Durability < item.MaxDurability)
+                .ToList();
 
             if (equipmentToRepair.Count == 0)
             {
@@ -115,27 +127,12 @@ namespace GamePrototype.Units
 
             foreach (var item in equipmentToRepair)
             {
-                item.Repair(4);
-                anyRepaired = true;
+                item.Repair(GameConstants.GrindstoneRepairAmount);
             }
 
-            if (anyRepaired)
-            {
-                Inventory.TryRemove(grindstone);
-                Console.WriteLine("Grindstone has been used!");
-                return true;
-            }
-
-            return false;
-        }
-
-        private void UseEconomicItem(EconomicItem economicItem)
-        {
-            if (economicItem is HealthPotion healthPotion)
-            {
-                Health = Math.Min(Health + healthPotion.HealthRestore, MaxHealth);
-                Console.WriteLine($"{Name} used a Health Potion! Health: {Health}/{MaxHealth}");
-            }
+            Inventory.TryRemove(economicItem);
+            Console.WriteLine("Grindstone has been used!");
+            return true;
         }
 
         protected override uint CalculateAppliedDamage(uint damage)

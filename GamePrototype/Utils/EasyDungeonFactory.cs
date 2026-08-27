@@ -1,50 +1,40 @@
-﻿using GamePrototype.Dungeon;
+using GamePrototype.Dungeon;
 using GamePrototype.Items.EconomicItems;
 using GamePrototype.Items.EquipItems;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace GamePrototype.Utils
 {
-    public class EasyDungeonFactory : DungeonFactory
+    public sealed class EasyDungeonFactory : IDungeonFactory
     {
-        private readonly UnitFactory _unitFactory;
+        private readonly IUnitFactory _unitFactory;
+        private readonly Random _random = Random.Shared;
 
-        public EasyDungeonFactory()
+        public EasyDungeonFactory(IUnitFactory unitFactory)
         {
-            _unitFactory = new EasyUnitFactory();
+            _unitFactory = unitFactory;
         }
 
-        public override DungeonRoom CreateRoom(string name) => new DungeonRoom(name);
+        public DungeonRoom CreateRoom(string name) => new(name);
 
-        public override DungeonRoom CreateRoomWithEnemy(string name)
-        {
-            var enemy = _unitFactory.CreateEnemy();
-            return new DungeonRoom(name, enemy);
-        }
+        public DungeonRoom CreateRoomWithEnemy(string name) =>
+            new(name, _unitFactory.CreateEnemy());
 
-        public override DungeonRoom CreateRoomWithLoot(string name)
+        public DungeonRoom CreateRoomWithLoot(string name)
         {
-            var loot = CreateLoot();
+            Item loot = name == "Final Chamber" ? new Gold() : CreateLoot();
             return new DungeonRoom(name, loot);
         }
 
         private Item CreateLoot()
         {
-            Random rand = new Random();
-            int lootType = rand.Next(4);
-
-            switch (lootType)
+            return _random.Next(4) switch
             {
-                case 0: return new Gold();
-                case 1: return new HealthPotion("Health Potion");
-                case 2: return new Grindstone("Grindstone");
-                case 3: return new Weapon(10, 15, "Iron Sword");
-                default: return new Gold();
-            }
+                0 => new Gold(),
+                1 => new HealthPotion(GameConstants.HealthPotion),
+                2 => new Grindstone(GameConstants.Grindstone),
+                3 => new Weapon(10, 15, "Iron Sword"),
+                _ => new Gold()
+            };
         }
     }
 }

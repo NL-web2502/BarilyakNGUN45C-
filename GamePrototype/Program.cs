@@ -1,4 +1,4 @@
-﻿using GamePrototype.Game;
+using GamePrototype.Game;
 using GamePrototype.Utils;
 
 namespace GamePrototype
@@ -22,7 +22,22 @@ namespace GamePrototype
                 Console.WriteLine("Invalid difficulty. Setting to Easy.");
             }
 
-            new GameLoop(difficulty).StartGame();
+            IUnitFactory unitFactory;
+            IDungeonFactory dungeonFactory;
+
+            if (difficulty == Difficulty.Easy)
+            {
+                unitFactory = new EasyUnitFactory();
+                dungeonFactory = new EasyDungeonFactory(unitFactory);
+            }
+            else
+            {
+                unitFactory = new HardUnitFactory();
+                dungeonFactory = new HardDungeonFactory(unitFactory);
+            }
+
+            var dungeonBuilder = new DungeonBuilder(dungeonFactory);
+            new GameLoop(unitFactory, dungeonBuilder).StartGame();
         }
     }
 }
