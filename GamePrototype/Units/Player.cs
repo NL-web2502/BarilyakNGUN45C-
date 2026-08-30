@@ -116,8 +116,8 @@ namespace GamePrototype.Units
         private bool UseGrindstone(EconomicItem economicItem)
         {
             var equipmentToRepair = _equipment.Values
-                .Where(item => item != null && item.Durability < item.MaxDurability)
-                .ToList();
+         .Where(item => item != null && item.Durability < item.MaxDurability)
+         .ToList();
 
             if (equipmentToRepair.Count == 0)
             {
@@ -251,4 +251,4 @@ namespace GamePrototype.Units
             Console.WriteLine();
         }
     }
-}   
+}

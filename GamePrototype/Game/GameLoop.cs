@@ -54,8 +54,7 @@ namespace GamePrototype.Game
 
                 if (_player is Player player)
                 {
-                    Console.WriteLine("
-Do you want to use a Grindstone? (y/n)");
+                    Console.WriteLine("Do you want to use a Grindstone? (y/n)");
                     if (Console.ReadLine()?.ToLower() == "y")
                     {
                         player.UseEconomicItem(GameConstants.Grindstone);
@@ -77,8 +76,7 @@ Do you want to use a Grindstone? (y/n)");
                 }
             }
 
-            Console.WriteLine($"
-Congratulations, {_player.Name}!");
+            Console.WriteLine($"Congratulations, {_player.Name}!");
             Console.WriteLine("Final result:");
             Console.WriteLine(_player.ToString());
         }
@@ -94,8 +92,7 @@ Congratulations, {_player.Name}!");
 
             if (currentRoom.Enemy != null)
             {
-                Console.WriteLine($"
-Enemy: {currentRoom.Enemy.Name}!");
+                Console.WriteLine($"Enemy: {currentRoom.Enemy.Name}!");
                 if (_combatManager.StartCombat(_player, currentRoom.Enemy) == _player)
                 {
                     _player.HandleCombatComplete();
@@ -111,8 +108,7 @@ Enemy: {currentRoom.Enemy.Name}!");
 
         private void DisplayRouteOptions(DungeonRoom currentRoom)
         {
-            Console.WriteLine("
-Where to go?");
+            Console.WriteLine("Where to go?");
             foreach (var room in currentRoom.Rooms)
             {
                 Console.Write($"{room.Key} - {(int)room.Key}	");
