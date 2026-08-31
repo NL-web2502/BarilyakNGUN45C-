@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Final.core.exeptions
+namespace Final.Core.Exceptions
 {
     public class WrongDiceNumberException : Exception
     {

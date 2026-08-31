@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Final.core.enums
+﻿namespace Final.Core.Enums
 {
     public enum CardRank
     {
@@ -13,9 +7,9 @@ namespace Final.core.enums
         Eight = 8,
         Nine = 9,
         Ten = 10,
-        Jack = 10,   
-        Queen = 10,   
-        King = 10,   
+        Jack = 10,
+        Queen = 10,
+        King = 10,
         Ace = 11
     }
 }

@@ -1,5 +1,5 @@
-﻿using Final.core;
-
+﻿using Final.Core;
+ 
 namespace FinalTask
 {
     internal class Program

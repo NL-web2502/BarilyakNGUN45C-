@@ -1,11 +1,7 @@
 ﻿using Final.core.enums;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Final.Core.Enums;
 
-namespace Final.core.models
+namespace Final.Core.Models
 {
     public readonly struct Card
     {

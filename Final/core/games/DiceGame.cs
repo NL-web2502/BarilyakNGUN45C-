@@ -1,68 +1,46 @@
-﻿using Final.core.models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Final.Core.Models;
+using Final.Core.Services;
 
-namespace Final.core.games
+namespace Final.Core.Games
 {
     public class DiceGame : CasinoGameBase
     {
         private readonly int _numberOfDice;
         private readonly int _minValue;
         private readonly int _maxValue;
-        private List<Dice> _dice;
         private long _bet;
-        private string _resultMessage;
+        private string _resultMessage = string.Empty;
         private int _playerScore;
         private int _computerScore;
 
         public DiceGame(int numberOfDice, int minValue, int maxValue)
         {
             if (numberOfDice < 1)
-            {
                 throw new ArgumentException("Number of dice must be at least 1");
-            }
-
-            if (minValue < 1 || minValue > int.MaxValue)
-            {
+            if (minValue < 1)
                 throw new ArgumentException("Min value must be between 1 and int.MaxValue");
-            }
-
-            if (maxValue < 1 || maxValue > int.MaxValue)
-            {
+            if (maxValue < 1)
                 throw new ArgumentException("Max value must be between 1 and int.MaxValue");
-            }
-
             if (minValue > maxValue)
-            {
                 throw new ArgumentException("Min value cannot be greater than max value");
-            }
 
             _numberOfDice = numberOfDice;
             _minValue = minValue;
             _maxValue = maxValue;
-            FactoryMethod();
         }
 
-        protected override void FactoryMethod()
-        {
-        }
-
-        public void SetBet(long bet)
+        public override void SetBet(long bet)
         {
             _bet = bet;
         }
 
         public override void PlayGame()
         {
-           
             _playerScore = 0;
             _computerScore = 0;
 
-            List<Dice> playerDice = new List<Dice>();
-            List<Dice> computerDice = new List<Dice>();
+            var playerDice = new List<Dice>();
+            var computerDice = new List<Dice>();
 
             for (int i = 0; i < _numberOfDice; i++)
             {
@@ -70,38 +48,26 @@ namespace Final.core.games
                 computerDice.Add(new Dice(_minValue, _maxValue));
             }
 
-            foreach (var die in _dice)
-            {
+            foreach (var die in playerDice)
                 _playerScore += die.Number;
-            }
 
-           
-            _dice.Clear();
-            for (int i = 0; i < _numberOfDice; i++)
-            {
-                _dice.Add(new Dice(_minValue, _maxValue));
-            }
-
-            foreach (var die in _dice)
-            {
+            foreach (var die in computerDice)
                 _computerScore += die.Number;
-            }
 
-            
             if (_playerScore > _computerScore)
             {
                 _resultMessage = $"Player wins! {_playerScore} vs {_computerScore}";
-                OnWinInvoke(new GameResultEventArgs(_resultMessage, _bet, _bet * 2));
+                OnWinInvoke(new GameResultEventArgs(_resultMessage, _bet, GameResult.Win));
             }
             else if (_computerScore > _playerScore)
             {
                 _resultMessage = $"Computer wins! {_computerScore} vs {_playerScore}";
-                OnLooseInvoke(new GameResultEventArgs(_resultMessage, _bet, 0));
+                OnLoseInvoke(new GameResultEventArgs(_resultMessage, _bet, GameResult.Lose));
             }
             else
             {
                 _resultMessage = $"It's a draw! Both have {_playerScore} points!";
-                OnDrawInvoke(new GameResultEventArgs(_resultMessage, _bet, _bet));
+                OnDrawInvoke(new GameResultEventArgs(_resultMessage, _bet, GameResult.Draw));
             }
 
             DisplayResult();

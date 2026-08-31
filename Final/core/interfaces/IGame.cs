@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Final.core.interfaces
+namespace Final.Core.Interfaces
 {
     public interface IGame
     {

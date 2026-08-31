@@ -1,39 +1,30 @@
-﻿using Final.core.services;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Final.Core.Services;
 
-namespace Final.core.games
+namespace Final.Core.Games
 {
     public abstract class CasinoGameBase
     {
-        public event EventHandler<GameResultEventArgs> OnWin;
-        public event EventHandler<GameResultEventArgs> OnLoose;
-        public event EventHandler<GameResultEventArgs> OnDraw;
+        public event EventHandler<GameResultEventArgs>? OnWin;
+        public event EventHandler<GameResultEventArgs>? OnLose;
+        public event EventHandler<GameResultEventArgs>? OnDraw;
 
         public abstract void PlayGame();
+        public abstract void DisplayResult();
+        public abstract void SetBet(long bet);
 
         protected virtual void OnWinInvoke(GameResultEventArgs e)
         {
             OnWin?.Invoke(this, e);
         }
 
-        protected virtual void OnLooseInvoke(GameResultEventArgs e)
+        protected virtual void OnLoseInvoke(GameResultEventArgs e)
         {
-            OnLoose?.Invoke(this, e);
+            OnLose?.Invoke(this, e);
         }
 
         protected virtual void OnDrawInvoke(GameResultEventArgs e)
         {
             OnDraw?.Invoke(this, e);
         }
-
-        protected abstract void FactoryMethod();
-
-        public abstract void DisplayResult();
-
-        public abstract void SetBet(long bet);
     }
 }

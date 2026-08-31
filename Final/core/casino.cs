@@ -1,15 +1,11 @@
-﻿using Final.core.games;
-using Final.core.interfaces;
-using Final.core.models;
-using Final.core.services;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using Final.core.models;
+using Final.Core.Games;
+using Final.Core.Interfaces;
+using Final.Core.Models;
+using Final.Core.Services;
 using System.Text.Json;
-using System.Threading.Tasks;
 
-namespace Final.core
+namespace Final.Core
 {
     public class Casino : IGame
     {
@@ -17,15 +13,17 @@ namespace Final.core
         private const long MaxBank = 1_000_000_000;
         private const long MinBet = 10;
 
-        private PlayerProfile _playerProfile;
-        private ISaveLoadService<string> _saveLoadService;
-        private CasinoGameBase _currentGame;
+        private PlayerProfile _playerProfile = null!;
+        private ISaveLoadService<string> _saveLoadService = null!;
+        private CasinoGameBase? _currentGame;
         private bool _isGameActive;
+        private bool _halfBankWasted;
 
         public Casino()
         {
             _saveLoadService = new FileSystemSaveLoadService(SavePath);
             _isGameActive = true;
+            _halfBankWasted = false;
         }
 
         public void StartGame()
@@ -45,7 +43,7 @@ namespace Final.core
                 if (input == "0")
                 {
                     _isGameActive = false;
-                    Console.WriteLine("\nThank you for playing! Goodbye!\n");
+                    Console.WriteLine("\nThank you playing! Goodbye!\n");
                     SaveProfile();
                     break;
                 }
@@ -70,7 +68,8 @@ namespace Final.core
                 if (!string.IsNullOrEmpty(profileData))
                 {
                     _playerProfile = JsonSerializer.Deserialize<PlayerProfile>(profileData);
-                    if (_playerProfile != null)
+                   
+                if (_playerProfile != null)
                     {
                         Console.WriteLine($"Welcome back, {_playerProfile.Name}!");
                         Console.WriteLine($"Your current bank: ${_playerProfile.Bank}\n");
@@ -86,9 +85,7 @@ namespace Final.core
             Console.Write("Enter your name: ");
             string name = Console.ReadLine()?.Trim() ?? "Player";
             if (string.IsNullOrEmpty(name))
-            {
                 name = "Player";
-            }
 
             _playerProfile = new PlayerProfile(name);
             Console.WriteLine($"Welcome, {_playerProfile.Name}! Your starting bank is ${_playerProfile.Bank}\n");
@@ -139,50 +136,46 @@ namespace Final.core
                 return;
             }
 
-            if (input == "1")
-            {
-                _currentGame = new BlackjackGame(20);
-            }
-            else if (input == "2")
-            {
-                _currentGame = new DiceGame(3, 1, 6);
-            }
+            _currentGame = input == "1"
+                ? new BlackjackGame(20)
+                : new DiceGame(3, 1, 6);
 
             _currentGame.OnWin += HandleWin;
-            _currentGame.OnLoose += HandleLoose;
+            _currentGame.OnLose += HandleLose;
             _currentGame.OnDraw += HandleDraw;
 
             _currentGame.SetBet(bet);
             _currentGame.PlayGame();
 
-            _currentGame.OnWin -= HandleWin;
-            _currentGame.OnLoose -= HandleLoose;
-            _currentGame.OnDraw -= HandleDraw;
+            if (_currentGame != null)
+            {
+                _currentGame.OnWin -= HandleWin;
+                _currentGame.OnLose -= HandleLose;
+                _currentGame.OnDraw -= HandleDraw;
+            }
 
             _currentGame = null;
-
             SaveProfile();
         }
 
-        private void HandleWin(object sender, GameResultEventArgs e)
+        private void HandleWin(object? sender, GameResultEventArgs e)
         {
-           
-            _playerProfile.Bank += e.ResultAmount;
+            long winAmount = e.BetAmount * 2;
+            _playerProfile.Bank += winAmount;
             Console.WriteLine($"\n{e.Message}");
-            Console.WriteLine($"💰 You won ${e.ResultAmount - e.BetAmount}!");
+            Console.WriteLine($"💰 You won ${winAmount - e.BetAmount} profit!");
             CheckBankLimits();
         }
 
-        private void HandleLoose(object sender, GameResultEventArgs e)
+        private void HandleLose(object? sender, GameResultEventArgs e)
         {
-            
             _playerProfile.Bank -= e.BetAmount;
             Console.WriteLine($"\n{e.Message}");
             Console.WriteLine($"💸 You lost ${e.BetAmount}!");
             CheckBankLimits();
         }
 
-        private void HandleDraw(object sender, GameResultEventArgs e)
+        private void HandleDraw(object? sender, GameResultEventArgs e)
         {
             Console.WriteLine($"\n{e.Message}");
             Console.WriteLine($"🤝 Your bet is returned!");
@@ -198,10 +191,12 @@ namespace Final.core
                 Console.WriteLine($"\n🎉 **Congratulations! You broke the casino!**");
                 Console.WriteLine($"Excess: ${excess}");
                 Console.WriteLine($"Your bank reset to: ${_playerProfile.Bank}\n");
+                _halfBankWasted = false;
             }
-                        
-            if (_playerProfile.Bank > MaxBank / 2)
+
+            if (_playerProfile.Bank > MaxBank / 2 && !_halfBankWasted && _playerProfile.Bank <= MaxBank)
             {
+                _halfBankWasted = true;
                 _playerProfile.Bank /= 2;
                 Console.WriteLine("\n🍺 **You wasted half of your bank money in casino's bar**");
                 Console.WriteLine($"Your bank is now: ${_playerProfile.Bank}\n");

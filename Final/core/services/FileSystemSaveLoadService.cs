@@ -1,11 +1,6 @@
-﻿using Final.core.interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Final.Core.Interfaces;
 
-namespace Final.core.services
+namespace Final.Core.Services
 {
     public class FileSystemSaveLoadService : ISaveLoadService<string>
     {
@@ -19,7 +14,7 @@ namespace Final.core.services
         public void SaveData(string data, string identifier)
         {
             try
-            { 
+            {
                 if (!Directory.Exists(_basePath))
                 {
                     Directory.CreateDirectory(_basePath);
